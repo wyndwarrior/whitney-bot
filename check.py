@@ -1,3 +1,4 @@
+import json
 import requests
 from twilio.rest import Client
 import time
@@ -6,6 +7,14 @@ import os
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36',
 }
+
+
+# Your Account SID from twilio.com/console
+account_sid = os.environ["ACCOUNT_SID"]
+auth_token  = os.environ['AUTH_TOKEN'] 
+to_numbers = json.loads(os.environ['TO_NUMBERS'])
+
+client = Client(account_sid, auth_token)
 
 prev_message = None
 
@@ -39,20 +48,14 @@ while True:
     print(message)
 
     if message != prev_message:
-
-        # Your Account SID from twilio.com/console
-        account_sid = os.environ["ACCOUNT_SID"]
-        auth_token  = os.environ['AUTH_TOKEN'] 
-
-        client = Client(account_sid, auth_token)
-
-        client.messages.create(
-            to=os.environ["TO_NUMBER"], 
-            from_=os.environ["TWILIO_NUMBER"],
-            body=message)
+        for to_number in to_numbers:
+            client.messages.create(
+                to=to_number, 
+                from_=os.environ["TWILIO_NUMBER"],
+                body=message)
 
         prev_message = message
         with open("prev_message.txt", "w") as f:
             f.write(message)
 
-    time.sleep(60 * 10)
+    time.sleep(60 * 5)
