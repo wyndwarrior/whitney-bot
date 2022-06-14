@@ -31,9 +31,9 @@ while True:
     data = resp.json()
 
     availability = data['payload']
-    for k, v in availability.items():
-        if permit_key in availability and availability[permit_key]['remaining'] > 0:
-            all_found.append((f"{k}: {availability[permit_key]['remaining']} permit(s) available"))
+    for date, date_avail in availability.items():
+        if permit_key in date_avail and date_avail[permit_key]['remaining'] > 0:
+            all_found.append((f"{date}: {date_avail[permit_key]['remaining']} permit(s) available"))
 
     message = "Half Dome bot:\n" + "\n".join(all_found) + "\n\nhttps://www.recreation.gov/permits/445859/registration/detailed-availability to book "
 
